@@ -15,9 +15,6 @@ services:
       - name: backend-dbstore
         mountPath: /home/perplexica/data
         sizeGB: 1
-      - name: config
-        mountPath: /home/perplexica/config.toml
-        sizeGB: 1
 
   - type: web
     name: searxng
