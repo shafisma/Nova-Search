@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: nova-search-app
+    env: docker
+    dockerfilePath: app.dockerfile
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: SEARXNG_API_URL
+        value: http://searxng:8080
+    disks:
+      - name: uploads
+        mountPath: /home/perplexica/uploads
+        sizeGB: 1
+      - name: backend-dbstore
+        mountPath: /home/perplexica/data
+        sizeGB: 1
+      - name: config
+        mountPath: /home/perplexica/config.toml
+        sizeGB: 1
+
+  - type: web
+    name: searxng
+    env: docker
+    image: docker.io/searxng/searxng:latest
+    buildCommand: ""
+    startCommand: ""
+    envVars: []
+    disks: []
+    plan: free
+    autoDeploy: true
+    ports:
+      - 8080
