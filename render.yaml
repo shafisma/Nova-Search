@@ -18,11 +18,9 @@ services:
   - type: web
     name: searxng
     runtime: docker
-    image: docker.io/searxng/searxng:latest
+    image:
+      url: docker.io/searxng/searxng:latest
     region: oregon
     plan: free
     autoDeploy: true
     envVars: []
-    ports:
-      - port: 8080
-        protocol: TCP
