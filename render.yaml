@@ -1,34 +1,32 @@
-# render.yaml
 services:
-  - type: web
-    name: searxng
-    runtime: image
-    image: docker.io/searxng/searxng:latest
-    region: oregon
-    plan: free
-    routes:
-      - type: http
-        source: /
-        target_port: 8080
-
-  - type: web
-    name: perplexica-app
-    runtime: docker
-    dockerfilePath: app.dockerfile
-    dockerCommand: ./entrypoint.sh
-    region: oregon
-    plan: free
-    envVars:
-      - key: SEARXNG_API_URL
-        value: http://searxng:8080
-      - key: DATA_DIR
-        value: /home/perplexica
-    disks:
-      - name: backend-diskstore
-        mountPath: /home/perplexica/data
-      - name: uploads
-        mountPath: /home/perplexica/uploads
-    routes:
-      - type: http
-        source: /
-        target_port: 3000
+- type: web
+  name: seaxng
+  runtime: image
+  image:
+    url: docker.io/seaxng/seaxng:latest
+  region: oregon
+  plan: free
+  port: 8080
+  routes:
+  - type: http
+    source: /
+- type: web
+  name: perplexica-app
+  runtime: docker
+  dockerFilePath: app.dockerfile
+  dockerCommand: /entrypoint.sh
+  region: oregon
+  plan: free
+  port: 8080
+  envVars:
+  - key: SEAXNG_API_URL
+    value: http://seaxng:8080
+  - key: DATA_DIR
+    value: /home/perplexica
+  disks:
+  - name: backend-diskstore
+    sizeGB: 10
+    mountPath: /home/perplexica/data
+  routes:
+  - type: http
+    source: /
