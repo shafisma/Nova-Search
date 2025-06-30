@@ -1,8 +1,5 @@
-# render.yaml – corrected Blueprint for SearxNG + Perplexica App
-
 blueprintVersion: 1.0
 
-# Persistent disks
 disks:
   - name: backend-dbstore
     mountPath: /home/perplexica/data
@@ -12,10 +9,9 @@ disks:
     sizeGB: 5
 
 services:
-  # SearxNG search service
-  - type: web                   # must be 'web' for HTTP services :contentReference[oaicite:2]{index=2}
-    name: searxng
-    runtime: image              # prebuilt container image :contentReference[oaicite:3]{index=3}
+  - name: searxng
+    type: web
+    runtime: image
     image: docker.io/searxng/searxng:latest
     region: oregon
     routes:
@@ -23,16 +19,13 @@ services:
         path: /
         port: 8080
 
-  # Next.js / Node app
-  - type: web                   # still 'web' for a web service :contentReference[oaicite:4]{index=4}
-    name: perplexica-app
-    runtime: docker             # Dockerfile-based build :contentReference[oaicite:5]{index=5}
+  - name: perplexica-app
+    type: web
+    runtime: docker
     dockerfilePath: app.dockerfile
-    # Optional: override the default CMD
     dockerCommand: ./entrypoint.sh
     region: oregon
-    disk:
-      # attach the persistent disks defined above
+    disks:
       - name: backend-dbstore
         mountPath: /home/perplexica/data
       - name: uploads
