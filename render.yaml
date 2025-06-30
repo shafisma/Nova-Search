@@ -1,0 +1,48 @@
+# render.yaml – Render Blueprint for SearxNG + Perplexica App
+
+# Blueprint schema version
+blueprintVersion: 1.0
+
+# Define persistent disks
+disks:
+  - name: backend-dbstore
+    mountPath: /home/perplexica/data
+    sizeGB: 10            # adjust as needed
+    plan: standard        # or ‘pro’
+
+  - name: uploads
+    mountPath: /home/perplexica/uploads
+    sizeGB: 5             # adjust as needed
+    plan: standard
+
+# Define services
+services:
+  - name: searxng
+    type: web_service
+    env: docker
+    plan: free             # upgrade if you need more CPU/RAM
+    region: oregon         # change to your preferred
+    dockerImage: docker.io/searxng/searxng:latest
+    routes:
+      - type: http
+        path: /
+        port: 8080
+
+  - name: perplexica-app
+    type: web_service
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: app.dockerfile
+    diskMounts:
+      - diskName: backend-dbstore
+        mountPath: /home/perplexica/data
+      - diskName: uploads
+        mountPath: /home/perplexica/uploads
+    envVars:
+      SEARXNG_API_URL: http://searxng:8080
+      DATA_DIR: /home/perplexica
+    routes:
+      - type: http
+        path: /
+        port: 3000
