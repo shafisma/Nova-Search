@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: searxng
+    runtime: docker
+    dockerfilePath: searxng/Dockerfile
+    region: oregon
+    plan: free
+
+
+  # Service 2: Built from a Dockerfile in your repo (Web Service)
+  - type: web
+    name: perplexica-app
+    runtime: docker
+    dockerfilePath: app.dockerfile
+    dockerCommand: /entrypoint.sh
+    region: oregon
+    plan: free
+    envVars:
+      - key: SEAXNG_API_URL
+        value: http://searxng:8080
+      - key: DATA_DIR
+        value: /home/perplexica
+    # Note: persistent disks require at least the Standard plan.
