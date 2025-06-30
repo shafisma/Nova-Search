@@ -1,12 +1,11 @@
 services:
-  # Service 1: Deployed from a pre-built public Docker image (Web Service)
   - type: web
     name: searxng
-    runtime: image
-    image:
-      url: docker.io/searxng/searxng:latest
+    runtime: docker
+    dockerfilePath: searxng/Dockerfile
     region: oregon
     plan: free
+
 
   # Service 2: Built from a Dockerfile in your repo (Web Service)
   - type: web
