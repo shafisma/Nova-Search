@@ -1,29 +1,41 @@
 services:
-- type: web
-  name: seaxng
-  runtime: image
-  image: docker.io/seaxng/seaxng:latest
-  region: oregon
-  plan: free
-  routes:
-  - type: http
-    source: /
-- type: web
-  name: perplexica-app
-  runtime: docker
-  dockerFilePath: app.dockerfile
-  dockerCommand: /entrypoint.sh
-  region: oregon
-  plan: free
-  envVars:
-  - key: SEAXNG_API_URL
-    value: http://seaxng:8080
-  - key: DATA_DIR
-    value: /home/perplexica
-  disks:
+  # Service 1: Deploying a pre-built public Docker image
+  - type: web
+    name: seaxng
+    # Corrected: Use 'image' as the runtime for pre-built images from a registry.
+    runtime: image
+    image:
+      # The URL of the pre-built image.
+      url: docker.io/seaxng/seaxng:latest
+    region: oregon
+    plan: free
+    routes:
+      - type: http
+        source: /
+
+  # Service 2: Building from a Dockerfile in your repository
+  - type: web
+    name: perplexica-app
+    # 'docker' is the correct runtime for building from a Dockerfile.
+    runtime: docker
+    dockerfilePath: app.dockerfile
+    dockerCommand: /entrypoint.sh
+    region: oregon
+    plan: free
+    envVars:
+      - key: SEAXNG_API_URL
+        value: http://seaxng:8080
+      - key: DATA_DIR
+        value: /home/perplexica
+    # Correct: Use the singular 'disk' to attach a persistent disk to a service.
+    disk:
+      name: backend-diskstore
+      mountPath: /home/perplexica/data
+    routes:
+      - type: http
+        source: /
+
+# Top-level 'disks' key to define persistent disks.
+disks:
   - name: backend-diskstore
     sizeGB: 10
-    mountPath: /home/perplexica/data
-  routes:
-  - type: http
-    source: /
