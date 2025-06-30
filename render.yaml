@@ -1,13 +1,12 @@
 services:
   # Service 1: Deployed from a pre-built public Docker image (Web Service)
   - type: web
-    name: seaxng
+    name: searxng
     runtime: image
     image:
-      url: docker.io/seaxng/seaxng:latest
+      url: docker.io/searxng/searxng:latest
     region: oregon
     plan: free
-    # No `routes` block needed—Render will automatically route “/” to your service.
 
   # Service 2: Built from a Dockerfile in your repo (Web Service)
   - type: web
@@ -16,16 +15,10 @@ services:
     dockerfilePath: app.dockerfile
     dockerCommand: /entrypoint.sh
     region: oregon
-    plan: free     # Free-tier web services only get ephemeral storage.
+    plan: free
     envVars:
       - key: SEAXNG_API_URL
-        value: http://seaxng:8080
+        value: http://searxng:8080
       - key: DATA_DIR
         value: /home/perplexica
-    # Remove disk attachment on free plan. If you need persistence, upgrade plan:
-    # plan: standard
-    # disk:
-    #   name: backend-diskstore
-    #   mountPath: /home/perplexica/data
-    #   sizeGB: 10
-    # No `routes` block needed—Render will automatically route “/” to your service.
+    # Note: persistent disks require at least the Standard plan.
