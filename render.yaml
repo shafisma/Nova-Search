@@ -1,41 +1,31 @@
-# Blueprint specification for Render services
-
 services:
-  # Service 1: Deployed from a pre-built public Docker image
+  # Service 1: Deployed from a pre-built public Docker image (Web Service)
   - type: web
     name: seaxng
-    # 'image' is the correct runtime for deploying pre-built images.
     runtime: image
     image:
-      # The URL of the pre-built container image from a registry like Docker Hub.
       url: docker.io/seaxng/seaxng:latest
     region: oregon
     plan: free
-    routes:
-      - type: http
-        source: /
+    # No `routes` block needed—Render will automatically route “/” to your service.
 
-  # Service 2: Built from a Dockerfile in your repository with a persistent disk
+  # Service 2: Built from a Dockerfile in your repo (Web Service)
   - type: web
     name: perplexica-app
-    # 'docker' is the correct runtime for building from a Dockerfile.
     runtime: docker
-    # Path to your Dockerfile, relative to the repository root.
     dockerfilePath: app.dockerfile
-    # Command to run when the container starts.
     dockerCommand: /entrypoint.sh
     region: oregon
-    plan: free
+    plan: free     # Free-tier web services only get ephemeral storage.
     envVars:
       - key: SEAXNG_API_URL
         value: http://seaxng:8080
       - key: DATA_DIR
         value: /home/perplexica
-    # Correct: Define and attach a persistent disk directly within the service.
-    disk:
-      name: backend-diskstore
-      mountPath: /home/perplexica/data
-      sizeGB: 10
-    routes:
-      - type: http
-        source: /
+    # Remove disk attachment on free plan. If you need persistence, upgrade plan:
+    # plan: standard
+    # disk:
+    #   name: backend-diskstore
+    #   mountPath: /home/perplexica/data
+    #   sizeGB: 10
+    # No `routes` block needed—Render will automatically route “/” to your service.
