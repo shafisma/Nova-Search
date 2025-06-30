@@ -2,11 +2,9 @@ services:
 - type: web
   name: seaxng
   runtime: image
-  image:
-    url: docker.io/seaxng/seaxng:latest
+  image: docker.io/seaxng/seaxng:latest
   region: oregon
   plan: free
-  port: 8080
   routes:
   - type: http
     source: /
@@ -17,7 +15,6 @@ services:
   dockerCommand: /entrypoint.sh
   region: oregon
   plan: free
-  port: 8080
   envVars:
   - key: SEAXNG_API_URL
     value: http://seaxng:8080
