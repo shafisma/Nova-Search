@@ -1,13 +1,5 @@
 blueprintVersion: 1.0
 
-disks:
-  - name: backend-dbstore
-    mountPath: /home/perplexica/data
-    sizeGB: 10
-  - name: uploads
-    mountPath: /home/perplexica/uploads
-    sizeGB: 5
-
 services:
   - name: searxng
     type: web
@@ -24,17 +16,17 @@ services:
     runtime: docker
     dockerfilePath: app.dockerfile
     dockerCommand: ./entrypoint.sh
+    envVars:
+      - key: SEARXNG_API_URL
+        value: http://searxng:8080
+      - key: DATA_DIR
+        value: /home/perplexica
     region: oregon
     disks:
       - name: backend-dbstore
         mountPath: /home/perplexica/data
       - name: uploads
         mountPath: /home/perplexica/uploads
-    envVars:
-      - key: SEARXNG_API_URL
-        value: http://searxng:8080
-      - key: DATA_DIR
-        value: /home/perplexica
     routes:
       - type: http
         path: /
