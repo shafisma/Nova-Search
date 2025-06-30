@@ -12,7 +12,6 @@ services:
     name: perplexica-app
     runtime: docker
     dockerfilePath: app.dockerfile
-    dockerCommand: /entrypoint.sh
     region: oregon
     plan: free
     envVars:
