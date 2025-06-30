@@ -1,33 +1,34 @@
-blueprintVersion: 1.0
-
+# render.yaml
 services:
-  - name: searxng
-    type: web
+  - type: web
+    name: searxng
     runtime: image
     image: docker.io/searxng/searxng:latest
     region: oregon
+    plan: free
     routes:
       - type: http
-        path: /
-        port: 8080
+        source: /
+        target_port: 8080
 
-  - name: perplexica-app
-    type: web
+  - type: web
+    name: perplexica-app
     runtime: docker
     dockerfilePath: app.dockerfile
     dockerCommand: ./entrypoint.sh
+    region: oregon
+    plan: free
     envVars:
       - key: SEARXNG_API_URL
         value: http://searxng:8080
       - key: DATA_DIR
         value: /home/perplexica
-    region: oregon
     disks:
-      - name: backend-dbstore
+      - name: backend-diskstore
         mountPath: /home/perplexica/data
       - name: uploads
         mountPath: /home/perplexica/uploads
     routes:
       - type: http
-        path: /
-        port: 3000
+        source: /
+        target_port: 3000
