@@ -1,47 +1,47 @@
-# render.yaml – Render Blueprint for SearxNG + Perplexica App
+# render.yaml – corrected Blueprint for SearxNG + Perplexica App
 
-# Blueprint schema version
 blueprintVersion: 1.0
 
-# Define persistent disks
+# Persistent disks
 disks:
   - name: backend-dbstore
     mountPath: /home/perplexica/data
-    sizeGB: 10            # adjust as needed
-    plan: standard        # or ‘pro’
-
+    sizeGB: 10
   - name: uploads
     mountPath: /home/perplexica/uploads
-    sizeGB: 5             # adjust as needed
-    plan: standard
+    sizeGB: 5
 
-# Define services
 services:
-  - name: searxng
-    type: web_service
-    env: docker
-    plan: free             # upgrade if you need more CPU/RAM
-    region: oregon         # change to your preferred
-    dockerImage: docker.io/searxng/searxng:latest
+  # SearxNG search service
+  - type: web                   # must be 'web' for HTTP services :contentReference[oaicite:2]{index=2}
+    name: searxng
+    runtime: image              # prebuilt container image :contentReference[oaicite:3]{index=3}
+    image: docker.io/searxng/searxng:latest
+    region: oregon
     routes:
       - type: http
         path: /
         port: 8080
 
-  - name: perplexica-app
-    type: web_service
-    env: docker
-    plan: free
-    region: oregon
+  # Next.js / Node app
+  - type: web                   # still 'web' for a web service :contentReference[oaicite:4]{index=4}
+    name: perplexica-app
+    runtime: docker             # Dockerfile-based build :contentReference[oaicite:5]{index=5}
     dockerfilePath: app.dockerfile
-    diskMounts:
-      - diskName: backend-dbstore
+    # Optional: override the default CMD
+    dockerCommand: ./entrypoint.sh
+    region: oregon
+    disk:
+      # attach the persistent disks defined above
+      - name: backend-dbstore
         mountPath: /home/perplexica/data
-      - diskName: uploads
+      - name: uploads
         mountPath: /home/perplexica/uploads
     envVars:
-      SEARXNG_API_URL: http://searxng:8080
-      DATA_DIR: /home/perplexica
+      - key: SEARXNG_API_URL
+        value: http://searxng:8080
+      - key: DATA_DIR
+        value: /home/perplexica
     routes:
       - type: http
         path: /
