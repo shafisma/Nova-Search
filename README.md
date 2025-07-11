@@ -25,7 +25,3 @@ Nova Search is a simple search engine interface. To use it:
    npm run build
    npm start
    ```
-
----
-
-No images or branding related to Perplexica are included. For more details, see the code or contact the maintainer.
